@@ -194,7 +194,7 @@ val pp_print_arrayi : (Format.formatter -> int -> 'a -> unit) -> (unit, Format.f
     indentation. Instead wrap the list into a vertical box with the
     format string [@\[<v>%a@\]] and the empty string as separator.
 *)
-val pp_print_list : (Format.formatter -> 'a -> unit) -> ('b, Format.formatter, unit) format -> Format.formatter -> 'a list -> unit
+val pp_print_list : (Format.formatter -> 'a -> unit) -> (unit, Format.formatter, unit) format -> Format.formatter -> 'a list -> unit
 
 (** Pretty-print a list with given separator and maintain a counter of elements 
 
@@ -202,13 +202,13 @@ val pp_print_list : (Format.formatter -> 'a -> unit) -> ('b, Format.formatter, u
     zero-based counter for the list's elements as the argument
     preceding the list element.
 *)
-val pp_print_listi : (Format.formatter -> int -> 'a -> unit) -> ('b, Format.formatter, unit) format -> Format.formatter -> 'a list -> unit
+val pp_print_listi : (Format.formatter -> int -> 'a -> unit) -> (unit, Format.formatter, unit) format -> Format.formatter -> 'a list -> unit
 
 (** Pretty-print two lists of the same length with given separator and maintain
     a counter of their elements.*)
 val pp_print_list2i :
   (Format.formatter -> int -> 'a -> 'b -> unit) ->
-  ('c, Format.formatter, unit) format ->
+  (unit, Format.formatter, unit) format ->
   Format.formatter -> 'a list -> 'b list -> unit
 
 (** Pretty-print an option type *)

@@ -1,0 +1,4 @@
+(ocamllex yicesLexer)
+(menhir
+ (infer false)
+ (modules yicesParser))

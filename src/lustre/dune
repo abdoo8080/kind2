@@ -1,0 +1,4 @@
+(ocamllex lustreLexer)
+(menhir
+ (infer false)
+ (modules lustreParser))

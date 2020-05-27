@@ -5,19 +5,17 @@
 bin
 
 # Generated build stuff.
-src/_build
+_build
 src/Makefile
 
 # Generated kind2.*.
 src/kind2.native
-src/kind2Config.ml
 src/kind2-terms.top
 
 # Generated build stuff.
 src/myocamlbuild.ml
 
 # Generated version stuff.
-src/version.ml
 
 # Generated doc.
 ocamldoc
@@ -39,6 +37,9 @@ autom4te.cache
 # Generated config stuff.
 config.log
 config.status
+
+# Generated opam.
+kind2.opam
 
 # Generated configure.
 configure

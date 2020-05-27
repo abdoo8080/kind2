@@ -2008,7 +2008,7 @@ module Global = struct
         Format.fprintf fmt
           "\
             Wallclock timeout in seconds@ \
-            Default: %1.f\
+            Default: %1.0f\
           "
           timeout_wall_default
     ) ;
@@ -2032,7 +2032,7 @@ module Global = struct
         Format.fprintf fmt
           "\
             Per-analysis wallclock timeout in seconds (0 for none)@ \
-            Default: %1.f\
+            Default: %1.0f\
           "
           timeout_analysis_default
     )
