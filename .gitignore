@@ -44,9 +44,6 @@ autom4te.cache
 config.log
 config.status
 
-# Generated opam.
-kind2.opam
-
 # Generated configure.
 configure
 
