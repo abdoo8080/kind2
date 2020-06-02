@@ -93,108 +93,50 @@ let pp_print_event ppf = function
 module EventMessage = 
 struct
 
-  type t = event 
+  type t = event
+
+  type zmsg = string list
 
   (* Convert strings to a message *)
-  let message_of_strings pop = match pop () with 
-
-    | "INVAR" ->  
-
-      let f = pop () in
-
-      let t = Term.import (Marshal.from_string f 0 : Term.t) in 
-
-      let f = pop () in
-
-      let l = (Marshal.from_string f 0 : string list) in 
-
-      let f = pop () in
-
-      let phi = Term.import (Marshal.from_string f 0 : Term.t) in 
-
-      let k = try int_of_string (pop ()) with 
-        | Failure _ -> raise Messaging.BadMessage 
-      in
-
-      let ts = (Marshal.from_string (pop ()) 0 : bool) in
-
-      Invariant (l, t, (k, phi), ts)
-
-    | "PROP_UNKNOWN" -> 
-
-      let p = pop () in
-
-      PropStatus (p, Property.PropUnknown)
-
-    | "PROP_KTRUE" -> 
-
-      let p = pop () in
-
-      let k = try int_of_string (pop ()) with 
-        | Failure _ -> raise Messaging.BadMessage 
-      in 
-
-      PropStatus (p, Property.PropKTrue k)
-
-    | "PROP_INVAR" -> 
-
-      let p = pop () in
-
-      let k = try int_of_string (pop ()) with 
-        | Failure _ -> raise Messaging.BadMessage 
-      in 
-
-      let f = pop () in
-
-      let phi = Term.import (Marshal.from_string f 0 : Term.t) in 
-
-      PropStatus (p, Property.PropInvariant (k, phi))
-
-    | "PROP_FALSE" -> 
-
-      let p = pop () in
-
-      let cex_string = pop () in
-      
-      let cex : (StateVar.t * Model.value list) list = 
-        Marshal.from_string cex_string 0
-      in
-      
-      let cex' =
-        List.map
-          (fun (sv, t) -> 
-             (StateVar.import sv, 
-              List.map Model.import_value t))
-          cex
-      in
-
-      PropStatus (p, Property.PropFalse cex')
-
-    | "STEP_CEX" -> 
-
-      let p = pop () in
-
-      let cex_string = pop () in
-      
-      let cex : (StateVar.t * Model.value list) list = 
-        Marshal.from_string cex_string 0
-      in
-      
-      let cex' =
-        List.map
-          (fun (sv, t) -> 
-             (StateVar.import sv, 
-              List.map Model.import_value t))
-          cex
-      in
-
-      StepCex (p, cex')
-
-    | s -> 
-
-      Debug.event "Bad message %s" s;
-      raise Messaging.BadMessage
-
+    let message_of_strings = function
+    | "INVAR" :: t :: l :: phi :: k :: ts :: _ ->
+        Invariant
+          ( Marshal.from_string l 0,
+            Term.import (Marshal.from_string t 0),
+            (int_of_string k, Term.import (Marshal.from_string phi 0)),
+            Marshal.from_string ts 0 )
+    | "PROP_UNKNOWN" :: p :: _ -> PropStatus (p, Property.PropUnknown)
+    | "PROP_KTRUE" :: p :: k :: _ ->
+        PropStatus (p, Property.PropKTrue (int_of_string k))
+    | "PROP_INVAR" :: p :: k :: f :: _ ->
+        let phi = Term.import (Marshal.from_string f 0 : Term.t) in
+        PropStatus (p, Property.PropInvariant (int_of_string k, phi))
+    | "PROP_FALSE" :: p :: cex_string :: _ ->
+        let cex : (StateVar.t * Model.value list) list =
+          Marshal.from_string cex_string 0
+        in
+        let cex' =
+          List.map
+            (fun (sv, t) -> (StateVar.import sv, List.map Model.import_value t))
+            cex
+        in
+        PropStatus (p, Property.PropFalse cex')
+    | "STEP_CEX" :: p :: cex_string :: _ ->
+        let cex : (StateVar.t * Model.value list) list =
+          Marshal.from_string cex_string 0
+        in
+        let cex' =
+          List.map
+            (fun (sv, t) -> (StateVar.import sv, List.map Model.import_value t))
+            cex
+        in
+        StepCex (p, cex')
+    | s :: _ ->
+        Debug.event "Bad message %s" s;
+        raise Messaging.BadMessage
+    | [] ->
+        Debug.event "Unexpected empty message";
+        raise Messaging.BadMessage
 
   (* Convert a message to strings *)
   let strings_of_message = function 

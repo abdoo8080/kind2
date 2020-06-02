@@ -1,12 +1,18 @@
 # Log files.
 *.log
 
+# Generated opam switch.
+_opam
+
 # Generated bin directory.
 bin
 
 # Generated build stuff.
 _build
 src/Makefile
+
+# Generated merlin file.
+src/.merlin
 
 # Generated kind2.*.
 src/kind2.native

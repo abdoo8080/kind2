@@ -4,6 +4,6 @@
   (name kind2)
   (synopsis "")
   (description "")
-  (depends ))
+  (depends (ocaml (>= 4.04)) bigstring dune menhir num yojson zmq))
 (using menhir 2.1)
 (generate_opam_files true)

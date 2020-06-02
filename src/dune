@@ -1,7 +1,7 @@
 (executable
   (public_name kind2)
-  (libraries num threads yojson str)
-  (modules_without_implementation messaging SolverSig testgen testgenLib))
+  (libraries bigstring num str threads yojson zmq)
+  (modules_without_implementation SolverSig testgen testgenLib))
 (include_subdirs unqualified)
 
 (env
