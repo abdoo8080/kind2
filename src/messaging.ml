@@ -1052,7 +1052,13 @@ struct
   let run_im (bg_ctx, pub_sock, pull_sock) workers on_exit =
     try
       let p =
-        Thread.create (im_thread (bg_ctx, pub_sock, pull_sock) workers) on_exit
+        Thread.create
+          (im_thread (bg_ctx, pub_sock, pull_sock) workers)
+          (fun exn ->
+            Zmq.Socket.close pub_sock;
+            Zmq.Socket.close pull_sock;
+            Zmq.Context.terminate bg_ctx;
+            on_exit exn)
       in
 
       initialized_process := Some `Supervisor;
@@ -1067,7 +1073,12 @@ struct
       let p =
         Thread.create
           (worker_thread (bg_ctx, sub_sock, push_sock))
-          (proc, on_exit)
+          ( proc,
+            fun exn ->
+              Zmq.Socket.close sub_sock;
+              Zmq.Socket.close push_sock;
+              Zmq.Context.terminate bg_ctx;
+              on_exit exn )
       in
 
       initialized_process := Some proc;
