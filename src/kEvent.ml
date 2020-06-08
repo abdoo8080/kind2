@@ -108,9 +108,11 @@ struct
     | "PROP_UNKNOWN" :: p :: _ -> PropStatus (p, Property.PropUnknown)
     | "PROP_KTRUE" :: p :: k :: _ ->
         PropStatus (p, Property.PropKTrue (int_of_string k))
-    | "PROP_INVAR" :: p :: k :: f :: _ ->
-        let phi = Term.import (Marshal.from_string f 0 : Term.t) in
-        PropStatus (p, Property.PropInvariant (int_of_string k, phi))
+    | "PROP_INVAR" :: p :: k :: phi :: _ ->
+        PropStatus
+          ( p,
+            Property.PropInvariant
+              (int_of_string k, Term.import (Marshal.from_string phi 0)) )
     | "PROP_FALSE" :: p :: cex_string :: _ ->
         let cex : (StateVar.t * Model.value list) list =
           Marshal.from_string cex_string 0
@@ -131,12 +133,10 @@ struct
             cex
         in
         StepCex (p, cex')
-    | s :: _ ->
-        Debug.event "Bad message %s" s;
+    | ss ->
+        Debug.event "Bad message %s" (String.concat ";@" ss);
         raise Messaging.BadMessage
-    | [] ->
-        Debug.event "Unexpected empty message";
-        raise Messaging.BadMessage
+
 
   (* Convert a message to strings *)
   let strings_of_message = function 
@@ -154,44 +154,44 @@ struct
 
       (* Serialize two state flag to string. *)
       let ts_string = Marshal.to_string two_state [Marshal.No_sharing] in
-      
+
       [
-        ts_string ;
-        string_of_int k ;
-        phi_string ;
-        scope_string ;
+        "INVAR" ;
         term_string ;
-        "INVAR"
+        scope_string ;
+        phi_string ;
+        string_of_int k ;
+        ts_string
       ]
 
     | PropStatus (p, Property.PropUnknown) -> 
 
-      [p; "PROP_UNKNOWN"]
+      ["PROP_UNKNOWN"; p]
 
     | PropStatus (p, Property.PropKTrue k) -> 
 
-      [string_of_int k; p; "PROP_KTRUE"]
+      ["PROP_KTRUE"; p; string_of_int k]
 
     | PropStatus (p, Property.PropInvariant (k, phi)) -> 
 
       (* Serialize term to string *)
       let phi_string = Marshal.to_string phi [Marshal.No_sharing] in
-      
-      [phi_string; string_of_int k; p; "PROP_INVAR"]
+
+      ["PROP_INVAR"; p; string_of_int k; phi_string]
 
     | PropStatus (p, Property.PropFalse cex) ->
 
       (* Serialize counterexample to string *)
       let cex_string = Marshal.to_string cex [Marshal.No_sharing] in
-      
-      [cex_string; p; "PROP_FALSE"]
+
+      ["PROP_FALSE"; p; cex_string]
 
     | StepCex (p, cex) ->
 
       (* Serialize counterexample to string *)
       let cex_string = Marshal.to_string cex [Marshal.No_sharing] in
-      
-      [cex_string; p; "STEP_CEX"]
+
+      ["STEP_CEX"; p; cex_string]
 
   (* Pretty-print a message *)
   let pp_print_message = pp_print_event

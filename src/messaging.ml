@@ -224,9 +224,9 @@ struct
 
   (* Return a list of strings of a message *)
   let strings_of_output_message = function 
-    | Log (i, s) -> [s; string_of_int i; "LOG"]
-    | Stat s -> [s; "STAT"]
-    | Progress i -> [string_of_int i; "PROGRESS"]
+    | Log (i, s) -> ["LOG"; string_of_int i; s]
+    | Stat s -> ["STAT"; s]
+    | Progress i -> ["PROGRESS"; string_of_int i]
 
 
   (* Return a message of a list of strings *)
@@ -246,7 +246,7 @@ struct
     | Ready -> ["READY"]
     | Ping -> ["PING"]
     | Terminate -> ["TERM"]
-    | Resend i -> [string_of_int i; "RESEND"]
+    | Resend i -> ["RESEND"; string_of_int i]
 
 
   (* Return a message of a list of strings *)
@@ -289,17 +289,18 @@ struct
      subscribe to the relevant messages only *)
 
   (* Create a ZeroMQ message *)
-  let zmsg_of_msg msg = 
-
+  let zmsg_of_msg msg =
     (* Use the PID of the process as sender *)
     let sender = string_of_int (Unix.getpid ()) in
-    let zmsg = (tag_of_message msg) :: sender :: List.rev (match msg with 
-        | OutputMessage m -> strings_of_output_message m
-        | ControlMessage m -> strings_of_control_message m
-        | RelayMessage (i, m) -> 
-          T.strings_of_message m @ [string_of_int i]) in
-    Debug.messaging
-      "@[<hv>zmsg_of_msg:@ %a@]" pp_print_zmsg zmsg;
+    let zmsg =
+      tag_of_message msg :: sender
+      ::
+      ( match msg with
+      | OutputMessage m -> strings_of_output_message m
+      | ControlMessage m -> strings_of_control_message m
+      | RelayMessage (i, m) -> string_of_int i :: T.strings_of_message m )
+    in
+    Debug.messaging "@[<hv>zmsg_of_msg:@ %a@]" pp_print_zmsg zmsg;
     (* Return message *)
     zmsg
 
@@ -681,8 +682,7 @@ struct
 
   let recv_messages sock as_invariant_manager =
     (* receive up to 'message_burst_size' messages from sock *)
-    let rec recv_iter = function
-      | i, zmsg ->
+    let rec recv_iter i zmsg =
           if i < message_burst_size then (
             if as_invariant_manager || not !debug_mode then
               enqueue (msg_of_zmsg zmsg) incoming
@@ -690,10 +690,10 @@ struct
               let _, message = msg_of_zmsg zmsg in
 
               enqueue (`Supervisor, message) incoming_handled;
-              recv_iter (i + 1, Zmq.Socket.recv_all ~block:false sock) )
+              recv_iter (i + 1) (Zmq.Socket.recv_all ~block:false sock) )
     in
 
-    try recv_iter (0, Zmq.Socket.recv_all ~block:false sock)
+    try recv_iter 0 (Zmq.Socket.recv_all ~block:false sock)
     with Unix.Unix_error (Unix.EAGAIN, _, _) -> ()
 
 
@@ -769,17 +769,16 @@ struct
       (* No more workers to wait for *)
       | [] -> ()
       (* List of workers to wait for is not empty *)
-      | workers_remaining ->
+      | workers_remaining -> (
           Debug.messaging "Sending PING to workers";
 
           (* let workers know invariant manager is ready *)
           Zmq.Socket.send_all pub_sock (zmsg_of_msg (ControlMessage Ping));
 
           (* Receive message on PULL socket *)
-          let msg = Zmq.Socket.recv_all ~block:false pull_sock in
+          try
+            let msg = Zmq.Socket.recv_all ~block:false pull_sock in
 
-          (* Message is empty ? *)
-          if msg != [] then
             let sender, payload = msg_of_zmsg msg in
 
             if payload = ControlMessage Ready then (
@@ -794,7 +793,7 @@ struct
                 pp_print_message payload;
 
               wait_iter (List.filter (( <> ) sender) workers_remaining) )
-          else (
+          with Unix.Unix_error (Unix.EAGAIN, _, _) ->
             Debug.messaging "No message received, still waiting for workers";
 
             minisleep 0.1;
@@ -802,10 +801,9 @@ struct
     in
 
     wait_iter workers;
-
     update_worker_status workers worker_status
 
-    
+
   let im_check_workers_status workers worker_status pub_sock pull_sock =
     (* ensure that all workers have checked in within
        worker_time_threshold seconds *)
@@ -1063,8 +1061,8 @@ struct
 
       initialized_process := Some `Supervisor;
 
-      ignore p
       (* thread identifier, might come in handy *)
+      ignore p
     with SocketBindFailure -> raise SocketBindFailure
 
 
