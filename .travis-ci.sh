@@ -11,17 +11,22 @@ wget "https://github.com/Z3Prover/z3/releases/download/z3-4.7.1/${z3_version}.zi
 unzip "${z3_version}.zip"
 sudo cp "${z3_version}/bin/z3" $install_dir
 
+# Install libzmq
+git clone https://github.com/zeromq/libzmq.git ./libzmq
+
+cd ./libzmq
+
+./autogen.sh
+./configure
+sudo make
+sudo make install
+
+cd $TRAVIS_BUILD_DIR
+
 # Retrieve opam.
 wget -qq https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh -O - | sh -s /usr/local/bin 4.04.0
 export OPAMYES=1
 eval $(opam config env)
 
 # Install ocaml packages needed for Kind 2.
-opam install ocamlbuild ocamlfind menhir yojson
-
-# Build the PR's Kind 2.
-./autogen.sh
-./build.sh --prefix=$(pwd)  # prefix installs the binary into the working directory for Travis
-
-# Checking regression test.
-make test
+opam install -t -v .
