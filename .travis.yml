@@ -5,8 +5,8 @@ jobs:
     - os: osx
 branches:
   only:
-    - develop
-    - master
+  - gh-pages
+  - /.*/
 language: c
 script: bash -ex .travis-ci.sh
 env:
