@@ -683,14 +683,13 @@ struct
   let recv_messages sock as_invariant_manager =
     (* receive up to 'message_burst_size' messages from sock *)
     let rec recv_iter i zmsg =
-          if i < message_burst_size then (
-            if as_invariant_manager || not !debug_mode then
-              enqueue (msg_of_zmsg zmsg) incoming
-            else
-              let _, message = msg_of_zmsg zmsg in
-
-              enqueue (`Supervisor, message) incoming_handled;
-              recv_iter (i + 1) (Zmq.Socket.recv_all ~block:false sock) )
+      if i < message_burst_size then (
+        ( if as_invariant_manager || not !debug_mode then
+          enqueue (msg_of_zmsg zmsg) incoming
+        else
+          let _, message = msg_of_zmsg zmsg in
+          enqueue (`Supervisor, message) incoming_handled );
+        recv_iter (i + 1) (Zmq.Socket.recv_all ~block:false sock) )
     in
 
     try recv_iter 0 (Zmq.Socket.recv_all ~block:false sock)
