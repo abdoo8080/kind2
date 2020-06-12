@@ -5,7 +5,6 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 elif [ "$TRAVIS_OS_NAME" = "osx" ]; then 
   z3_version="z3-4.7.1-x64-osx-10.11.6"
   install_dir="/usr/local/bin/z3"
-  brew install zeromq
 fi
 
 wget "https://github.com/Z3Prover/z3/releases/download/z3-4.7.1/${z3_version}.zip"
@@ -13,7 +12,7 @@ unzip "${z3_version}.zip"
 sudo cp "${z3_version}/bin/z3" $install_dir
 
 # Retrieve opam.
-wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh -O - | sh -s
+wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh -O - | sudo sh -s
 opam init -y
 eval $(opam env)
 

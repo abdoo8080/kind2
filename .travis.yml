@@ -8,8 +8,11 @@ branches:
   - gh-pages
   - /.*/
 language: c
-before_install:
-  - sudo apt-get -y install libzmq3-dev
+addons:
+  apt:
+    packages: libzmq3-dev
+  homebrew:
+    packages: zeromq
 script: bash -ex .travis-ci.sh
 env:
   matrix:
