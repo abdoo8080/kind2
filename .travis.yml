@@ -10,7 +10,9 @@ branches:
 language: c
 addons:
   apt:
-    packages: libzmq3-dev
+    packages:
+      - libzmq3-dev
+      - bubblewrap
   homebrew:
     packages: zeromq
 script: bash -ex .travis-ci.sh
