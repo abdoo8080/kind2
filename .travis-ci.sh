@@ -2,7 +2,7 @@
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
   z3_version="z3-4.7.1-x64-ubuntu-14.04"
   install_dir="/usr/bin/z3"
-  sudo apt-get install libzmq3-dev
+  sudo apt-get install libzmq5 libzmq3-dev
 elif [ "$TRAVIS_OS_NAME" = "osx" ]; then 
   z3_version="z3-4.7.1-x64-osx-10.11.6"
   install_dir="/usr/local/bin/z3"
@@ -16,6 +16,7 @@ sudo cp "${z3_version}/bin/z3" $install_dir
 # Retrieve opam.
 wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh -O - | sh -s
 echo y | opam init
+eval $(opam env)
 
 # Install ocaml packages needed for Kind 2.
-opam install -t -v .
+echo y | opam install -t -v .
