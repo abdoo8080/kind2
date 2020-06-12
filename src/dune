@@ -4,6 +4,11 @@
   (modules_without_implementation SolverSig testgen testgenLib))
 (include_subdirs unqualified)
 
+(rule
+  (target version.ml)
+  (deps   version.ml.in)
+  (action  (progn (copy %{deps} %{target}) (run dune subst) )))
+
 (env
   (dev
     (flags (:standard -warn-error -A))))

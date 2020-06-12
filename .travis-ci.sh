@@ -2,7 +2,7 @@
 if [ "$TRAVIS_OS_NAME" = "linux" ]; then
   z3_version="z3-4.7.1-x64-ubuntu-14.04"
   install_dir="/usr/bin/z3"
-  sudo apt-get install libzmq5 libzmq3-dev
+  sudo apt-get install -f libzmq3-dev
 elif [ "$TRAVIS_OS_NAME" = "osx" ]; then 
   z3_version="z3-4.7.1-x64-osx-10.11.6"
   install_dir="/usr/local/bin/z3"
