@@ -1,3 +1,4 @@
 (rule
   (alias runtest)
+  (deps (source_tree ./regression))
   (action (run ./run.sh ./regression %{bin:kind2})))
