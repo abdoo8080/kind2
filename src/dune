@@ -1,9 +1,11 @@
 (executable
-  (public_name kind2)
-  (libraries num str threads yojson zmq)
-  (modules_without_implementation SolverSig testgen testgenLib))
+ (public_name kind2)
+ (libraries num str threads yojson zmq)
+ (modules_without_implementation SolverSig Testgen TestgenLib))
+
 (include_subdirs unqualified)
 
 (env
-  (dev
-    (flags (:standard -warn-error -A))))
+ (dev
+  (flags
+   (:standard -warn-error -A))))
