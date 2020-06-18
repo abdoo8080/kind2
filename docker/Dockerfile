@@ -5,22 +5,28 @@ ARG COMMIT
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
-    automake \
-    libtool \
-    pkg-config \
+#    automake \
+#    libtool \
+#    pkg-config \
+    bubblewrap \
+    gcc \
+    libzmq3-dev \
+    m4 \
+    make \
+    patch \
+    rsync \
     unzip \
     wget
 
 # Install opam and ocaml from GitHub (Ubuntu version causes problems)
-RUN wget -qq https://github.com/ocaml/opam/releases/download/2.0.6/opam-2.0.6-x86_64-linux \
-  && mv opam-2.0.6-x86_64-linux /usr/local/bin/opam && chmod a+x /usr/local/bin/opam \
-  && opam init --disable-sandboxing --yes --comp 4.04.0 && eval $(opam env)
-
-# Install ocaml packages needed for Kind 2.
-RUN opam install --yes ocamlbuild ocamlfind menhir yojson
+RUN wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh && \
+    chmod +x install.sh && \
+    echo "/usr/local/bin" | ./install.sh && \
+    opam init --disable-sandboxing --yes --compiler 4.07.1 && \
+    eval $(opam env)
 
 # Force to use opam version of ocamlc.
-ENV PATH="/root/.opam/4.04.0/bin:${PATH}"
+ENV PATH="/root/.opam/4.07.1/bin:${PATH}"
 
 # Retrieve Z3 binary
 RUN wget -qq https://github.com/Z3Prover/z3/releases/download/z3-4.7.1/z3-4.7.1-x64-ubuntu-16.04.zip \
@@ -44,16 +50,13 @@ COPY . kind2-build/
 
 # Build Kind 2
 WORKDIR kind2-build
-RUN if [ -f "Makefile" ] ; then make clean \
-  && rm -rf src/_build configure Makefile bin src/Makefile src/kind2.native \
-  && autoreconf ; fi
-RUN ./autogen.sh && ./build.sh
+RUN opam install -y . --destdir=.
 
 
 FROM ubuntu:18.04
 # Install runtime dependencies:
 # JRE (required by JKind) and libgomp1 (required by Z3)
-RUN apt-get update && apt-get install -y default-jre libgomp1 \
+RUN apt-get update && apt-get install -y default-jre libgomp1 libzmq3-dev \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /z3-4.7.1-x64-ubuntu-16.04/bin/z3 /bin/

@@ -17,7 +17,7 @@
  (documentation "https://kind.cs.uiowa.edu/kind2_user_doc")
  (depends
   (ocaml
-   (>= 4.04))
+   (>= 4.07))
   dune
   menhir
   num
