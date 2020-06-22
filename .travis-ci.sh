@@ -15,7 +15,7 @@ sudo cp "${z3_version}/bin/z3" $install_dir
 wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
 chmod +x install.sh
 echo "/usr/local/bin" | ./install.sh
-opam init -y --disable-sandboxing -c 4.07.1
+opam init -y --disable-sandboxing -c $OCAML_VERSION
 eval $(opam env)
 
 # Install ocaml packages needed for Kind 2.

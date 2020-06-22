@@ -5,7 +5,6 @@ jobs:
     - os: osx
 branches:
   only:
-  - gh-pages
   - /.*/
 language: c
 addons:
@@ -19,7 +18,7 @@ addons:
 script: bash -ex .travis-ci.sh
 env:
   matrix:
-    - OCAML_VERSION=4.04.0
+    - OCAML_VERSION=4.07.1
 before_deploy: bash -ex .deploy.sh
 deploy:
   provider: releases

@@ -1,7 +1,8 @@
 (executable
  (public_name kind2)
  (libraries num str threads yojson zmq)
- (modules_without_implementation SolverSig Testgen TestgenLib))
+ (modules (:standard \ horn lustreChecker nusmv oldParser testgen))
+ (modules_without_implementation solverSig))
 
 (include_subdirs unqualified)
 

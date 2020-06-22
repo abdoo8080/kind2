@@ -5,9 +5,6 @@ ARG COMMIT
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
-#    automake \
-#    libtool \
-#    pkg-config \
     bubblewrap \
     gcc \
     libzmq3-dev \
@@ -50,8 +47,7 @@ COPY . kind2-build/
 
 # Build Kind 2
 WORKDIR kind2-build
-RUN opam install -y . --destdir=.
-
+RUN opam install -y .
 
 FROM ubuntu:18.04
 # Install runtime dependencies:
@@ -63,7 +59,7 @@ COPY --from=builder /z3-4.7.1-x64-ubuntu-16.04/bin/z3 /bin/
 COPY --from=builder /yices-2.6.1/bin/yices-smt2 bin/
 COPY --from=builder /cvc4 /bin/
 COPY --from=builder /jkind/jkind /jkind/*.jar /bin/
-COPY --from=builder /kind2-build/bin/kind2 /
+COPY --from=builder /root/.opam/4.07.1/bin/kind2 /
 
 # Entry point.
 ENTRYPOINT ["./kind2"]
