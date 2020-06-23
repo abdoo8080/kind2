@@ -13,8 +13,7 @@ sudo cp "${z3_version}/bin/z3" $install_dir
 
 # Retrieve opam.
 wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh
-chmod +x install.sh
-echo "/usr/local/bin" | ./install.sh
+echo "/usr/local/bin" | sh install.sh
 opam init -y --disable-sandboxing -c $OCAML_VERSION
 eval $(opam env)
 

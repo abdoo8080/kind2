@@ -1,12 +1,14 @@
 (executable
  (public_name kind2)
  (libraries num str threads yojson zmq)
- (modules (:standard \ horn lustreChecker nusmv oldParser testgen))
- (modules_without_implementation solverSig testgenLib))
+ (modules
+  (:standard \ horn lustreChecker nusmv oldParser testgen testgenLib
+    testgenStrategies))
+ (modules_without_implementation solverSig))
 
 (include_subdirs unqualified)
 
 (env
  (dev
   (flags
-   (:standard -warn-error -A))))
+   (:standard -annot -bin-annot -warn-error -A))))
