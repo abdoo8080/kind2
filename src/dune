@@ -1,14 +1,25 @@
 (executable
+ (package kind2)
  (public_name kind2)
+ (libraries kind2Internal)
+ (modules kind2))
+
+(library
+ (public_name kind2Internal)
  (libraries num str threads yojson zmq)
  (modules
-  (:standard \ horn lustreChecker nusmv oldParser testgen testgenLib
+  (:standard \ horn kind2 lustreChecker nusmv oldParser testgen testgenLib
     testgenStrategies))
- (modules_without_implementation solverSig))
+ (modules_without_implementation solverSig)
+ (wrapped false))
 
 (include_subdirs unqualified)
+
+(documentation
+ (package kind2Internal))
 
 (env
  (dev
   (flags
-   (:standard -annot -bin-annot -warn-error -A))))
+   (-annot -bin-annot -w
+     A-4-9-27-29-41-32-33-34-35-37-38-39-40-45-48-42-44-50-60@P@U@F))))

@@ -1,0 +1,7 @@
+(rule
+ (alias testing)
+ (package kind2Internal)
+ (deps
+  (source_tree ./include))
+ (action
+  (run cp -r ./include %{project_root}/_doc/_html/kind2Internal)))
