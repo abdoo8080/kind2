@@ -17,8 +17,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install opam and ocaml from GitHub (Ubuntu version causes problems)
 RUN wget -qq https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh && \
-    chmod +x install.sh && \
-    echo "/usr/local/bin" | ./install.sh && \
+    echo "/usr/local/bin" | sh install.sh && \
     opam init --disable-sandboxing --yes --compiler 4.07.1 && \
     eval $(opam env)
 
