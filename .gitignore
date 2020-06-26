@@ -13,6 +13,9 @@ _build
 # Generated merlin file.
 .merlin
 
+# Generated doc.
+ocamldoc
+
 # Generated server stuff.
 server/myocamlbuild.ml
 server/Makefile

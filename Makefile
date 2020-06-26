@@ -1,4 +1,8 @@
-.PHONY: all build clean doc install test uninstall
+LOCAL_ALLDOCDIR=$(CURDIR)/doc
+LOCAL_DOCDIR=$(CURDIR)/ocamldoc
+LOCAL_USRDOCDIR=$(CURDIR)/doc/usr
+
+.PHONY: all build clean install kind2-doc test uninstall doc
 
 all: build
 
@@ -8,15 +12,22 @@ build:
 clean:
 	@dune clean
 
-doc:
-	@dune build @doc
-	@cp -r ./src/doc/include ./_build/default/_doc/_html/kind2Internal
-
 install:
 	@dune install
+
+kind2-doc:
+	@dune build @doc
+	@mkdir -p $(LOCAL_DOCDIR)
+	@cp -r $(CURDIR)/src/doc/include $(CURDIR)/_build/default/_doc/_html/kind2Internal
+	@cp -rf $(CURDIR)/_build/default/_doc/_html/* $(LOCAL_DOCDIR)
 
 test:
 	@dune test --no-buffer
 
 uninstall:
 	@dune uninstall
+
+doc:
+	make -C $(LOCAL_USRDOCDIR) all
+	cp $(LOCAL_USRDOCDIR)/build/kind2.pdf $(LOCAL_ALLDOCDIR)/user_documentation.pdf
+	cp $(LOCAL_USRDOCDIR)/build/index.html $(LOCAL_ALLDOCDIR)/user_documentation.html

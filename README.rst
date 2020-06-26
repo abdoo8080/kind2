@@ -67,7 +67,7 @@ Requirements
 
 * Linux or Mac OS X,
 * `OPAM <http://opam.ocaml.org>`_\,
-* `libzmq (c lib) 4.x <https://zeromq.org>`_\,
+* `libzmq (c lib) 4.x or later <https://zeromq.org>`_\,
 * OCaml 4.07 or later,
 * `Yojson <https://github.com/ocaml-community/yojson>`_\ ,
 * `num <https://github.com/ocaml/num>`_ (part of OCaml distribution until 4.06),
