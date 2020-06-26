@@ -29,5 +29,3 @@ uninstall:
 
 doc:
 	make -C $(LOCAL_USRDOCDIR) all
-	cp $(LOCAL_USRDOCDIR)/build/kind2.pdf $(LOCAL_ALLDOCDIR)/user_documentation.pdf
-	cp $(LOCAL_USRDOCDIR)/build/index.html $(LOCAL_ALLDOCDIR)/user_documentation.html

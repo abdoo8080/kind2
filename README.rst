@@ -88,13 +88,11 @@ Move to the top-level directory of the Kind 2 distribution, Then, run
 
    opam install kind2
 
-
 By default, ``kind2`` will be installed into the bin directory of your current OPAM switch. Run 
 
 .. code-block:: none
 
    opam install kind2 --destdir=DIR
-
 
 to install the Kind 2 binary into ``<DIR>/bin``.
 
@@ -109,7 +107,6 @@ With OPAM 2.x you can create a local switch which will install all dependencies 
 
    opam switch create .
    make
-
 
 Documentation
 -------------
