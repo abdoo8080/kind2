@@ -1,12 +1,10 @@
 (executable
- (package kind2)
  (public_name kind2)
  (libraries kind2Internal)
  (modules kind2))
 
 (library
  (name kind2Internal)
- (public_name kind2Internal)
  (libraries num str threads yojson zmq)
  (modules
   (:standard \ horn kind2 lustreChecker nusmv oldParser testgen testgenLib
@@ -15,9 +13,6 @@
  (wrapped false))
 
 (include_subdirs unqualified)
-
-(documentation
- (package kind2Internal))
 
 (env
  (dev

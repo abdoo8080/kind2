@@ -1,7 +1,11 @@
+; this rule generates index.html and copies it with ./include to private
+; documentation
 (rule
- (alias testing)
- (package kind2Internal)
+ (alias copy)
  (deps
-  (source_tree ./include))
+  (universe)
+  (source_tree .)
+  (source_tree ../_doc/html)
+  (source_tree ../.kind2Internal.objs/byte))
  (action
-  (run cp -r ./include %{project_root}/_doc/_html/kind2Internal)))
+  (run ./copy.sh)))

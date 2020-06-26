@@ -1,3 +1,4 @@
+DUNE_DOCDIR=$(CURDIR)/_build/default/_doc/_html
 LOCAL_ALLDOCDIR=$(CURDIR)/doc
 LOCAL_DOCDIR=$(CURDIR)/ocamldoc
 LOCAL_USRDOCDIR=$(CURDIR)/doc/usr
@@ -16,10 +17,10 @@ install:
 	@dune install
 
 kind2-doc:
-	@dune build @doc
+	@dune build @doc-private
+	@dune build @copy
 	@mkdir -p $(LOCAL_DOCDIR)
-	@cp -r $(CURDIR)/src/doc/include $(CURDIR)/_build/default/_doc/_html/kind2Internal
-	@cp -rf $(CURDIR)/_build/default/_doc/_html/* $(LOCAL_DOCDIR)
+	@cp -rf $(DUNE_DOCDIR)/* $(LOCAL_DOCDIR)
 
 test:
 	@dune test --no-buffer
