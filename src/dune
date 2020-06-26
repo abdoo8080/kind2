@@ -5,6 +5,7 @@
  (modules kind2))
 
 (library
+ (name kind2Internal)
  (public_name kind2Internal)
  (libraries num str threads yojson zmq)
  (modules
