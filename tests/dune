@@ -1,6 +1,8 @@
 (rule
  (alias runtest)
+ (package kind2)
  (deps
+  (package kind2)
   (source_tree ./regression))
  (action
   (run ./run.sh ./regression %{bin:kind2} --timeout 42)))
