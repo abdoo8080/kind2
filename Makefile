@@ -10,20 +10,21 @@ LOCAL_USRDOCDIR=$(CURDIR)/doc/usr
 all: build
 
 build:
+	@dune subst
 	@dune build
+	@git checkout $(CURDIR)/src/version.ml
 	@mkdir -p $(LOCAL_BINDIR)
 	@cp $(DUNE_EXEDIR)/kind2.exe $(LOCAL_BINDIR)/kind2
 
 clean:
 	@dune clean
-	@rm -rf $(LOCAL_BINDIR)
-	@rm -rf $(LOCAL_DOCDIR)
+	@rm -rf $(LOCAL_BINDIR) $(LOCAL_DOCDIR)
 
 doc:
 	make -C $(LOCAL_USRDOCDIR) all
 
 install:
-	@dune install
+	@opam install .
 
 kind2-doc:
 	@dune build @doc-private
@@ -35,4 +36,4 @@ test:
 	@dune test --no-buffer
 
 uninstall:
-	@dune uninstall
+	@opam remove .
