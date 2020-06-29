@@ -1,5 +1,6 @@
 DUNE_DOCDIR=$(CURDIR)/_build/default/_doc/_html
 DUNE_EXEDIR=$(CURDIR)/_build/default/src
+GIT_DESCRIBE=$(shell git describe --always --dirty)
 LOCAL_ALLDOCDIR=$(CURDIR)/doc
 LOCAL_BINDIR=$(CURDIR)/bin
 LOCAL_DOCDIR=$(CURDIR)/ocamldoc
@@ -10,7 +11,7 @@ LOCAL_USRDOCDIR=$(CURDIR)/doc/usr
 all: build
 
 build:
-	@dune subst
+	@sed -i "s/%%NAME%%/kind2/g" "s/%%VERSION%%/$(GIT_DESCRIBE)/g" $(CURDIR)/src/version.ml
 	@dune build
 	@git checkout $(CURDIR)/src/version.ml
 	@mkdir -p $(LOCAL_BINDIR)
